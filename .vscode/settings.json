@@ -1,0 +1,5 @@
+{
+   "powerquery.client.additionalSymbolsDirectories": [
+      "f:/GitHubRepos/ya-metrica-helpers/.vscode/excel-pq-symbols"
+   ]
+}
