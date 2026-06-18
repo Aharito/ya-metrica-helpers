@@ -11,7 +11,7 @@
  * @param {boolean} depthResetOnExit - Сбрасывать счетчик при выходе из раздела
  * @param {boolean} depthSendAsVisitParam - Передавать фактическую глубину как параметр визита
  * @param {number} counterId - Номер счетчика Яндекс Метрики (например, 12345678)
- * @version 1.0.0
+ * @version 1.0.1
  */
 function trackSectionDepth(pathToSection, depthEventLimit, depthEventName, depthResetOnExit, depthSendAsVisitParam, counterId) {
     // 1. Нормализуем путь: убираем завершающие слеши, чтобы /cat и /cat/ имели один ключ
@@ -53,8 +53,8 @@ function trackSectionDepth(pathToSection, depthEventLimit, depthEventName, depth
             sessionStorage.setItem(lastPathKey, currentPath);
         }
 
-        // Если включена передача глубины как параметра визита
-        if (depthSendAsVisitParam) {
+        // Если включена передача глубины как параметра визита и доступна функция ym
+        if (depthSendAsVisitParam && typeof ym === 'function') {
             // Используем ym(..., 'params', ...) для обновления параметров текущего визита без отправки нового хита
             ym(counterId, 'params', {
                 section_depth: currentDepth,      // Текущая глубина
@@ -67,8 +67,8 @@ function trackSectionDepth(pathToSection, depthEventLimit, depthEventName, depth
             // Проверяем, не отправляли ли уже цель за текущую сессию
             const isAlreadyFired = sessionStorage.getItem(firedKey) === 'true';
 
-            // Отправляем цель только один раз за визит при достижении порога
-            if (!isAlreadyFired) {
+            // Отправляем цель только один раз за визит при достижении порога и если доступна функция ym
+            if (!isAlreadyFired && typeof ym === 'function') {
                 ym(counterId, 'reachGoal', depthEventName, {
                     section_depth: currentDepth      // Передаем глубину как параметр цели
                 });
