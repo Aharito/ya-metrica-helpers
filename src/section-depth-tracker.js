@@ -1,3 +1,6 @@
+window.YaMetricaHelpers = window.YaMetricaHelpers || {};
+window.YaMetricaHelpers.analytics = window.YaMetricaHelpers.analytics || {};
+
 /**
  * Отслеживает глубину просмотра страниц в заданном разделе сайта
  * 
@@ -11,9 +14,9 @@
  * @param {boolean} depthResetOnExit - Сбрасывать счетчик при выходе из раздела
  * @param {boolean} depthSendAsVisitParam - Передавать фактическую глубину как параметр визита
  * @param {number} counterId - Номер счетчика Яндекс Метрики (например, 12345678)
- * @version 1.0.1
+ * @version 1.0.0
  */
-function trackSectionDepth(pathToSection, depthEventLimit, depthEventName, depthResetOnExit, depthSendAsVisitParam, counterId) {
+window.YaMetricaHelpers.analytics.trackSectionDepth = function(pathToSection, depthEventLimit, depthEventName, depthResetOnExit, depthSendAsVisitParam, counterId) {
     // 1. Нормализуем путь: убираем завершающие слеши, чтобы /cat и /cat/ имели один ключ
     const normalizedPath = pathToSection.replace(/\/+$/, '');
 
@@ -30,7 +33,7 @@ function trackSectionDepth(pathToSection, depthEventLimit, depthEventName, depth
     const currentPath = window.location.pathname;
 
     // Проверяем, находится ли пользователь в целевом разделе
-    const inSection = isInSection(currentPath, pathToSection);
+    const inSection = YaMetricaHelpers.utils.isInSection(currentPath, pathToSection);
 
     if (inSection) {
         // === ПОЛЬЗОВАТЕЛЬ В РАЗДЕЛЕ ===
@@ -84,17 +87,4 @@ function trackSectionDepth(pathToSection, depthEventLimit, depthEventName, depth
         sessionStorage.removeItem(firedKey);     // Удаляем флаг отправки цели
         sessionStorage.removeItem(lastPathKey);  // Удаляем путь последней страницы
     }
-}
-
-// ============================================================
-// ПРИМЕР ИСПОЛЬЗОВАНИЯ
-// ============================================================
-
-trackSectionDepth(
-    '/polikarbonat-dlya-teplic/',  // Путь к разделу
-    3,                              // Порог глубины
-    'sectionSpkDepthOver3',         // Имя цели
-    true,                           // Сбрасывать при выходе
-    true,                           // Передавать глубину как параметр
-    12345678                        // ID счетчика Яндекс Метрики
-);
+};
